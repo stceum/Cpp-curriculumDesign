@@ -28,7 +28,9 @@ void MainWindow::editorshow(){
     ui->setupUi(this);
     connect(ui->exit,SIGNAL(clicked()),this,SIGNAL(editorquit()));
     connect(ui->action_8,SIGNAL(triggered()),this,SLOT(defrag()));
+    connect(ui->search,SIGNAL(clicked()),this,SLOT(srch_mode()));
     anEdi=true;
+    mode=0;
     //启用编辑
     connect(ui->course,SIGNAL(valueChanged(int)),this,SLOT(course_n_change()));
     connect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(course_name_change()));
@@ -44,13 +46,13 @@ void MainWindow::editorshow(){
     connect(ui->sex,SIGNAL(currentIndexChanged(int)),this,SLOT(sex_change()));
 
     connect(ui->listWidget_1,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(list_1_selected_changed()));
-    connect(ui->clear,SIGNAL(clicked()),this,SLOT(clear()));
+    connect(ui->clear,SIGNAL(clicked()),this,SLOT(clearmode()));
     connect(ui->subm,SIGNAL(clicked()),this,SLOT(change_old()));
     connect(ui->del,SIGNAL(clicked()),this,SLOT(del_sel()));
     this->show();
      ui->statusBar->showMessage(tr("欢迎来到管理员界面！"),2000);
      ini();
-     clear();
+     clear(0);
 }
 
 void MainWindow::readershow(){
@@ -59,6 +61,7 @@ void MainWindow::readershow(){
     ui->setupUi(this);
     connect(ui->exit,SIGNAL(clicked()),this,SIGNAL(editorquit()));
     anEdi=false;
+    mode=0;
     //禁用编辑
     connect(ui->listWidget_2,SIGNAL(currentRowChanged(int)),this,SLOT(list_2_selected_changed()));
     ui->t_grade->setEnabled(false);
@@ -166,7 +169,6 @@ void MainWindow::list_1_refresh(){
     disconnect(ui->grade,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
     disconnect(ui->listWidget_2,SIGNAL(currentRowChanged(int)),this,SLOT(list_2_selected_changed()));
     disconnect(ui->add,SIGNAL(clicked()),this,SLOT(add_new()));
-
     disconnect(ui->name,SIGNAL(editingFinished()),this,SLOT(name_change()));
     disconnect(ui->id,SIGNAL(editingFinished()),this,SLOT(id_change()));
     disconnect(ui->major,SIGNAL(editingFinished()),this,SLOT(major_change()));
@@ -222,7 +224,7 @@ void MainWindow::list_1_selected_changed(){
            ind>>point;
     }
     ind.close();
-    clear();
+    clear(0);
     temp=rfFile(fiN,point);
     ui->name->setText(QString::fromStdString(temp.name));
     ui->id->setText(QString::fromStdString(temp.id));
@@ -250,7 +252,18 @@ void MainWindow::list_1_selected_changed(){
     connect(ui->sex,SIGNAL(currentIndexChanged(int)),this,SLOT(sex_change()));
 }
 
-void MainWindow::clear(){//clear the left information before
+void MainWindow::clearmode(){
+    ui->course->setEnabled(true);
+    clear(1);
+}
+
+void MainWindow::clear(int mode){//clear the left information before
+    if(mode==1){
+        disconnect(ui->listWidget_1,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(list_1_selected_changed_srch()));
+        connect(ui->listWidget_1,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(list_1_selected_changed()));
+        list_1_refresh();
+    }
+
     ui->name->setText("");
     ui->sex->setCurrentIndex(0);
     ui->id->setText("");
@@ -431,7 +444,7 @@ void MainWindow::add_new(){
         prog(10);
         wtFile(fiN,temp);
         //clear the data that have been writen to the file
-        clear();
+        clear(0);
         ui->statusBar->setStyleSheet("color:green;");
         ui->statusBar->showMessage(tr("√√√√√添加成功√√√√√"),2000);
         prog(90);
@@ -443,6 +456,7 @@ void MainWindow::add_new(){
         ui->statusBar->setStyleSheet("color:red;");
         ui->statusBar->showMessage(tr("xxxxx非法添加xxxxx"),2000);
     }
+    clear(1);
 }
 
 void MainWindow::change_old(){
@@ -461,6 +475,7 @@ void MainWindow::change_old(){
         ui->statusBar->setStyleSheet("color:red;");
         ui->statusBar->showMessage(tr("xxxxx非法提交xxxxx"),2000);
     }
+    clear(1);
 }
 
 void MainWindow::del_sel(){
@@ -471,6 +486,7 @@ void MainWindow::del_sel(){
     prog(90);
     list_1_refresh();
     prog(100);
+    clear(1);
 }
 
 void MainWindow::defrag(){//delete the litter in the file
@@ -479,4 +495,182 @@ void MainWindow::defrag(){//delete the litter in the file
     ui->statusBar->setStyleSheet("color:green;");
     ui->statusBar->showMessage(tr("√√√√√碎片整理成功√√√√√"),2000);
     prog(100);
+    clear(1);
+}
+
+void MainWindow::list_1_refresh_srch(){
+    int currentRow=ui->listWidget_1->currentRow();
+    if(currentRow>ui->listWidget_1->count()){
+        currentRow=-1;
+    }
+    disconnect(ui->course,SIGNAL(valueChanged(int)),this,SLOT(course_n_change()));
+    disconnect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(course_name_change()));
+    disconnect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    disconnect(ui->grade,SIGNAL(editingFinished()),this,SLOT(grade_change()));
+    disconnect(ui->grade,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    disconnect(ui->listWidget_2,SIGNAL(currentRowChanged(int)),this,SLOT(list_2_selected_changed()));
+    disconnect(ui->add,SIGNAL(clicked()),this,SLOT(add_new()));
+
+    disconnect(ui->name,SIGNAL(editingFinished()),this,SLOT(name_change()));
+    disconnect(ui->id,SIGNAL(editingFinished()),this,SLOT(id_change()));
+    disconnect(ui->major,SIGNAL(editingFinished()),this,SLOT(major_change()));
+    disconnect(ui->sex,SIGNAL(currentIndexChanged(int)),this,SLOT(sex_change()));
+
+    int counter = ui->listWidget_1->count();
+    QListWidgetItem *item;
+    for(int index = 0;index <counter;index++)
+    {
+
+        item = ui->listWidget_1->takeItem(0);
+        if(item!=nullptr)
+        delete item;
+
+    }
+    //read items from the file
+    fstream file(fiN.c_str(),ios_base::out|ios_base::in);
+    fstream index("res",ios_base::out|ios_base::in);
+
+    while(!index.eof()){
+
+           long long point=0;
+           if(index>>point)
+                file.seekp(point);
+           else {
+               break;
+           }
+           //读取完一个学生的信息
+           getline(file,temp.name,';');
+
+           stringstream stri;
+           string str;
+
+           getline(file,str,';');
+           stri<<str;
+           stri>>temp.sex;
+
+           getline(file,temp.id,';');
+
+           getline(file,temp.major,';');
+
+           stri.clear();
+           if(getline(file,str,';'));
+           else {
+               break;
+           }
+           stri<<str;
+           stri>>temp.num;
+
+           if(temp.num!=0)
+           {
+               temp.cour=new course[temp.num];
+               for (int i=0;i<temp.num;i++) {
+
+                   getline(file,temp.cour[i].cour,';');
+                   getline(file,str,';');
+                   stri<<str;
+                   stri>>temp.cour[i].grade;
+               }
+           }
+
+           QListWidgetItem *item = new QListWidgetItem;
+
+           std::stringstream num_;
+           string _sex;
+
+           if(temp.sex==0)
+               _sex="男";
+           else{
+               _sex="女";
+           }
+
+
+           num_<<temp.num;
+           string _num_;
+           num_>>_num_;
+           string list= temp.name +":" +temp.id +" "+_sex
+                   +" "+temp.major+" "+"课程数:"+_num_;
+           item->setText(QString::fromStdString(list));
+           ui->listWidget_1->addItem(item);
+       }
+       file.close();
+       index.close();
+    if(currentRow!=-1)
+        ui->listWidget_1->setCurrentRow(currentRow);
+
+    connect(ui->course,SIGNAL(valueChanged(int)),this,SLOT(course_n_change()));
+    connect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(course_name_change()));
+    connect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    connect(ui->grade,SIGNAL(editingFinished()),this,SLOT(grade_change()));
+    connect(ui->grade,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    connect(ui->listWidget_2,SIGNAL(currentRowChanged(int)),this,SLOT(list_2_selected_changed()));
+    connect(ui->add,SIGNAL(clicked()),this,SLOT(add_new()));
+
+    connect(ui->name,SIGNAL(editingFinished()),this,SLOT(name_change()));
+    connect(ui->id,SIGNAL(editingFinished()),this,SLOT(id_change()));
+    connect(ui->major,SIGNAL(editingFinished()),this,SLOT(major_change()));
+    connect(ui->sex,SIGNAL(currentIndexChanged(int)),this,SLOT(sex_change()));
+}
+
+void MainWindow::list_1_selected_changed_srch(){
+    disconnect(ui->course,SIGNAL(valueChanged(int)),this,SLOT(course_n_change()));
+    disconnect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(course_name_change()));
+    disconnect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    disconnect(ui->grade,SIGNAL(editingFinished()),this,SLOT(grade_change()));
+    disconnect(ui->grade,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    disconnect(ui->listWidget_2,SIGNAL(currentRowChanged(int)),this,SLOT(list_2_selected_changed()));
+    disconnect(ui->add,SIGNAL(clicked()),this,SLOT(add_new()));
+
+    disconnect(ui->name,SIGNAL(editingFinished()),this,SLOT(name_change()));
+    disconnect(ui->id,SIGNAL(editingFinished()),this,SLOT(id_change()));
+    disconnect(ui->major,SIGNAL(editingFinished()),this,SLOT(major_change()));
+    disconnect(ui->sex,SIGNAL(currentIndexChanged(int)),this,SLOT(sex_change()));
+
+    fstream ind("res",ios_base::in);
+    int cuR=ui->listWidget_1->currentRow();
+    ind>>point;
+    for (int i=0;i<cuR;i++) {
+           ind>>point;
+    }
+    ind.close();
+    clear(0);
+    temp=rfFile(fiN,point);
+    ui->name->setText(QString::fromStdString(temp.name));
+    ui->id->setText(QString::fromStdString(temp.id));
+    ui->major->setText(QString::fromStdString(temp.major));
+    ui->sex->setCurrentIndex(temp.sex);
+    ui->course->setValue(temp.num);
+    stringstream stri;
+    stri<<temp.t_grade;
+    string strr;
+    stri>>strr;
+    ui->t_grade->setText(QString::fromStdString(strr));
+    list_2_refresh();
+
+    connect(ui->course,SIGNAL(valueChanged(int)),this,SLOT(course_n_change()));
+    connect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(course_name_change()));
+    connect(ui->cour_name,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    connect(ui->grade,SIGNAL(editingFinished()),this,SLOT(grade_change()));
+    connect(ui->grade,SIGNAL(editingFinished()),this,SLOT(list_2_refresh()));
+    connect(ui->listWidget_2,SIGNAL(currentRowChanged(int)),this,SLOT(list_2_selected_changed()));
+    connect(ui->add,SIGNAL(clicked()),this,SLOT(add_new()));
+
+    connect(ui->name,SIGNAL(editingFinished()),this,SLOT(name_change()));
+    connect(ui->id,SIGNAL(editingFinished()),this,SLOT(id_change()));
+    connect(ui->major,SIGNAL(editingFinished()),this,SLOT(major_change()));
+    connect(ui->sex,SIGNAL(currentIndexChanged(int)),this,SLOT(sex_change()));
+}
+
+void MainWindow::srch_mode(){
+    //change the show mode into search mode
+    disconnect(ui->listWidget_1,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(list_1_selected_changed()));
+    connect(ui->listWidget_1,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(list_1_selected_changed_srch()));
+    ui->course->setEnabled(false);
+    temp.num=0;
+    temp.cour=nullptr;
+    temp.name=ui->name->text().toStdString();
+    temp.sex=ui->sex->currentIndex();
+    temp.id=ui->id->text().toStdString();
+    temp.major=ui->major->text().toStdString();
+    srch(fiN,temp);
+    list_1_refresh_srch();
 }

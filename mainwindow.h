@@ -32,7 +32,8 @@ private slots:
 
     void list_1_refresh();
     void list_1_selected_changed();
-    void clear();
+    void clear(int mode=1);
+    void clearmode();
 
     void id_change();
     void name_change();
@@ -51,6 +52,9 @@ private slots:
     void del_sel();
     void defrag();
 
+    void list_1_refresh_srch();
+    void list_1_selected_changed_srch();
+    void srch_mode();
 signals:
     void editorquit();
 
@@ -60,6 +64,7 @@ private:
     bool anEdi;
     Stu temp;
     long long point;
+    int mode;
 };
 
 

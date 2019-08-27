@@ -285,6 +285,7 @@ bool s_jug(string &a,string &b){
 bool srch(string filename,Stu &tar){//open the file,open the index,write the result to a new file
     fstream index((filename+".ind").c_str(),ios_base::in);
     fstream srch_res("res",ios_base::out);
+    index.seekg(0);
     long long point;
     while (!index.eof()) {
         index>>point;
