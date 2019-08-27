@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1005</width>
-    <height>800</height>
+    <width>1007</width>
+    <height>810</height>
    </rect>
   </property>
   <property name="font">
@@ -29,6 +29,13 @@
           <width>600</width>
           <height>700</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>黑体</family>
+          <pointsize>10</pointsize>
+          <underline>true</underline>
+         </font>
         </property>
         <property name="autoScroll">
          <bool>true</bool>
@@ -92,6 +99,16 @@
             <family>微软雅黑</family>
            </font>
           </property>
+          <item>
+           <property name="text">
+            <string>无</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>综合成绩</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>
@@ -525,6 +542,13 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <family>黑体</family>
+          <pointsize>10</pointsize>
+          <underline>true</underline>
+         </font>
+        </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::SingleSelection</enum>
         </property>
@@ -747,7 +771,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1005</width>
+     <width>1007</width>
      <height>40</height>
     </rect>
    </property>
@@ -777,10 +801,10 @@
    <widget class="QMenu" name="menu">
     <property name="geometry">
      <rect>
-      <x>345</x>
-      <y>103</y>
+      <x>451</x>
+      <y>109</y>
       <width>120</width>
-      <height>142</height>
+      <height>94</height>
      </rect>
     </property>
     <property name="font">
@@ -793,8 +817,6 @@
      <string>管理</string>
     </property>
     <addaction name="action_8"/>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
     <addaction name="action_3"/>
    </widget>
    <widget class="QMenu" name="menu_2">
@@ -807,7 +829,13 @@
    <addaction name="menu"/>
    <addaction name="menu_2"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="font">
+    <font>
+     <family>黑体</family>
+    </font>
+   </property>
+  </widget>
   <action name="action">
    <property name="text">
     <string>清除数据</string>

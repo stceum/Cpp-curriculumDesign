@@ -99,3 +99,52 @@ string Admin::search_low(){//0代表没有找到
     account.close();
     return  "\0";
 }
+
+bool Admin::del_data(){
+    fstream account;
+    account.open("data.acc",ios_base::in);
+    fstream accnew("%data.acc",ios_base::out);
+    string acc_,pas_,dat_,tem;
+    while(!account.eof()){
+        getline(account,tem,'=');
+        if(tem=="account")getline(account,acc_,';');
+        else if (tem=="password") {
+            getline(account,pas_,';');
+            Decode(pas_);
+        }
+        else getline(account,dat_,';');
+        if(dat_==dat&&pas_==pas);
+        else {
+            account<<"account="<<acc<<";"<<"password="<<Encrypt(pas)<<";"<<"datatitle="<<dat<<";";
+        }
+        account.close();
+    }
+    remove("data.acc");
+    rename("%data.acc","data.acc");
+    return 1;
+}
+
+bool Admin::change_paswd(string new_passwd){
+    fstream account;
+    account.open("data.acc",ios_base::in);
+    fstream accnew("%data.acc",ios_base::out);
+    string acc_,pas_,dat_,tem;
+    while(!account.eof()){
+        getline(account,tem,'=');
+        if(tem=="account")getline(account,acc_,';');
+        else if (tem=="password") {
+            getline(account,pas_,';');
+            Decode(pas_);
+        }
+        else getline(account,dat_,';');
+        if(dat_==dat&&pas==pas_){
+            account<<"account="<<acc<<";"<<"password="<<Encrypt(new_passwd)<<";"<<"datatitle="<<dat<<";";
+        }
+        else {
+            account<<"account="<<acc<<";"<<"password="<<Encrypt(pas)<<";"<<"datatitle="<<dat<<";";
+        }
+    }
+    remove("data.acc");
+    rename("%data.acc","data.acc");
+    return 1;
+}

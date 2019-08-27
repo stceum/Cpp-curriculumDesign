@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        QwkSort.cpp \
         Stu.cpp \
         admin.cpp \
         delay.cpp \
@@ -34,6 +35,7 @@ SOURCES += \
         widget.cpp
 
 HEADERS += \
+        QwkSort.h \
         Stu.h \
         admin.h \
         delay.h \
@@ -49,3 +51,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RC_FILE += \
+        SGM.rc

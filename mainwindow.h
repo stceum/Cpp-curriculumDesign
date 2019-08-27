@@ -5,7 +5,8 @@
 #include <QListWidgetItem>
 #include <iostream>
 #include <sstream>
-#include "Stu.h"
+#include "QwkSort.h"
+#include "admin.h"
 using namespace std;
 
 namespace Ui {
@@ -25,6 +26,9 @@ public:
 
 
 private slots:
+
+    void backup();
+    void recover();
 
     void editorshow();
     void readershow();
@@ -55,6 +59,10 @@ private slots:
     void list_1_refresh_srch();
     void list_1_selected_changed_srch();
     void srch_mode();
+
+    void list_1_refresh_sort();
+    void list_1_selected_changed_sort();
+    void sort_mode();
 signals:
     void editorquit();
 
@@ -65,6 +73,7 @@ private:
     Stu temp;
     long long point;
     int mode;
+    int num_of_stu;
 };
 
 

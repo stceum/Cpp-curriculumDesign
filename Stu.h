@@ -12,6 +12,8 @@ typedef struct course_{
     course_();
 }course;
 
+typedef struct for_sort for_s;
+for_s * get_data(string filNm,int num);
 class Stu{
 
     string name;
@@ -36,6 +38,7 @@ public:
     friend bool dfFile(string filename,long long index);
     //friend Stu _test();//temp
     friend bool srch(string filename,Stu &tar);
+    friend for_s * get_data(string filNm,int num);
 };
 
 bool wtFile(string filename,Stu &tar,long long index=-1);
@@ -44,7 +47,6 @@ Stu rfFile(string filename,long long index);
 bool dfFile(string filename,long long index);
 //Stu _test();
 bool srch(string filename,Stu &tar);
-
 bool s_jug(string &a,string &b);
 
 #endif
