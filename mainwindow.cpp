@@ -10,6 +10,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
+void MainWindow::prog(int value){
+    int curv=ui->prg->value();
+    if(curv<value)
+    for(int i=curv;i<=value;i++)
+        ui->prg->setValue(i);
+    else {
+        for(int i=curv;i>=value;i--)
+            ui->prg->setValue(i);
+    }
+}
+
 void MainWindow::editorshow(){
 
     delete ui;
@@ -39,6 +50,7 @@ void MainWindow::editorshow(){
     this->show();
      ui->statusBar->showMessage(tr("欢迎来到管理员界面！"),2000);
      ini();
+     clear();
 }
 
 void MainWindow::readershow(){
@@ -414,44 +426,57 @@ void MainWindow::read_file(string filename){
 }
 
 void MainWindow::add_new(){
-
+    ui->prg->setValue(0);
     if((temp.id!="")&&(temp.name!="")&&(temp.major!="")){
+        prog(10);
         wtFile(fiN,temp);
-
         //clear the data that have been writen to the file
         clear();
         ui->statusBar->setStyleSheet("color:green;");
         ui->statusBar->showMessage(tr("√√√√√添加成功√√√√√"),2000);
+        prog(90);
         list_1_refresh();
+        prog(100);
     }
     else {
+        prog(10);
         ui->statusBar->setStyleSheet("color:red;");
         ui->statusBar->showMessage(tr("xxxxx非法添加xxxxx"),2000);
     }
 }
 
 void MainWindow::change_old(){
+    ui->prg->setValue(0);
     if(ui->listWidget_1->currentRow()!=-1){
+        prog(10);
         wtFile(fiN,temp,point);
         ui->statusBar->setStyleSheet("color:green;");
         ui->statusBar->showMessage(tr("√√√√√修改成功√√√√√"),2000);
+        prog(90);
         list_1_refresh();
+        prog(100);
     }
     else {
+        prog(10);
         ui->statusBar->setStyleSheet("color:red;");
         ui->statusBar->showMessage(tr("xxxxx非法提交xxxxx"),2000);
     }
 }
 
 void MainWindow::del_sel(){
+    ui->prg->setValue(0);
     dfFile(fiN,point);
     ui->statusBar->setStyleSheet("color:green;");
     ui->statusBar->showMessage(tr("√√√√√删除成功√√√√√"),2000);
+    prog(90);
     list_1_refresh();
+    prog(100);
 }
 
 void MainWindow::defrag(){//delete the litter in the file
+    ui->prg->setValue(0);
     clnLit(fiN);
     ui->statusBar->setStyleSheet("color:green;");
     ui->statusBar->showMessage(tr("√√√√√碎片整理成功√√√√√"),2000);
+    prog(100);
 }

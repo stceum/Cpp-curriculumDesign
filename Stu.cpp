@@ -77,10 +77,16 @@ bool wtFile(string filename,Stu &tar,long long index){
 		ind<<" "<<point;
 		ind.close();
 		file<<tar.name<<";"<<tar.sex<<";"<<tar.id<<";"<<tar.major<<";"<<tar.num<<";";
-		if(tar.num!=0)
-		for(int i=0;i<tar.num;i++){
-			file<<tar.cour[i].cour<<";"<<tar.cour[i].grade<<";";
-		}
+        tar.t_grade=0;
+        if(tar.num!=0){
+            for(int i=0;i<tar.num;i++){
+                file<<tar.cour[i].cour<<";"<<tar.cour[i].grade<<";";
+                tar.t_grade+=tar.cour[i].grade;
+            }
+            tar.t_grade/=tar.num;
+
+        }
+        file<<tar.t_grade<<";";
 		file<<endl;
 		file.close();
 	}
@@ -104,9 +110,16 @@ bool wtFile(string filename,Stu &tar,long long index){
 		file<<tar.name<<";"<<tar.sex<<";"
 			<<tar.id<<";"<<tar.major<<";"
 			<<tar.num<<";";
-		for(int i=0;i<tar.num;i++){
-			file<<tar.cour[i].cour<<";"<<tar.cour[i].grade<<";";
-		}
+        tar.t_grade=0;
+        if(tar.num!=0){
+            for(int i=0;i<tar.num;i++){
+                file<<tar.cour[i].cour<<";"<<tar.cour[i].grade<<";";
+                tar.t_grade+=tar.cour[i].grade;
+            }
+            tar.t_grade/=tar.num;
+
+        }
+        file<<tar.t_grade<<";";
 		file<<endl;
 		file.close();
 		
@@ -154,6 +167,9 @@ bool clnLit(string filNm){
                     str.clear();
                 }
             }
+            getline(file,strr,';');
+            str<<strr;
+            str>>tem.t_grade;
 
             wtFile(("%"+filNm),tem);
         }
@@ -202,6 +218,10 @@ Stu rfFile(string filename,long long index){
 			str.clear();
 		}
 	}
+    getline(file,strr,';');
+    str<<strr;
+    str>>tem.t_grade;
+    str.clear();
 	
 	file.close();
 	return tem;
@@ -249,3 +269,30 @@ Stu _test(){
 	return temp;
 }
 */
+
+bool s_jug(string &a,string &b){
+    if(a==""||b=="")
+        return 1;
+    else {
+        if(a==b)
+            return 1;
+        else {
+            return 0;
+        }
+    }
+}
+
+bool srch(string filename,Stu &tar){//open the file,open the index,write the result to a new file
+    fstream index((filename+".ind").c_str(),ios_base::in);
+    fstream srch_res("res",ios_base::out);
+    long long point;
+    while (!index.eof()) {
+        index>>point;
+        Stu temp=rfFile(filename,point);
+        if(s_jug(tar.name,temp.name)&&s_jug(tar.id,temp.id)&&s_jug(temp.major,tar.major)&&temp.sex==tar.sex)
+            srch_res<<" "<<point;
+    }
+    index.close();
+    srch_res.close();
+    return 1;
+}

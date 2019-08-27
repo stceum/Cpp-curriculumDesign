@@ -34,13 +34,17 @@ public:
     friend bool clnLit(string filNm);//clean the litter data
     friend Stu rfFile(string filename,long long index);//read from file>>>return the Stu
     friend bool dfFile(string filename,long long index);
-    friend Stu _test();//temp    
+    //friend Stu _test();//temp
+    friend bool srch(string filename,Stu &tar);
 };
 
 bool wtFile(string filename,Stu &tar,long long index=-1);
 bool clnLit(string filNm);
 Stu rfFile(string filename,long long index);
 bool dfFile(string filename,long long index);
-Stu _test();
+//Stu _test();
+bool srch(string filename,Stu &tar);
+
+bool s_jug(string &a,string &b);
 
 #endif
