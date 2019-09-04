@@ -11,16 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
-void MainWindow::prog(int value){
-    int curv=ui->prg->value();
-    if(curv<value)
-    for(int i=curv;i<=value;i++)
-        ui->prg->setValue(i);
-    else {
-        for(int i=curv;i>=value;i--)
-            ui->prg->setValue(i);
-    }
-}
 
 void MainWindow::backup(){
     fstream ind((fiN+".ind").c_str(),ios_base::in);
@@ -131,6 +121,7 @@ void MainWindow::ini(){
     fstream file(fiN.c_str(),ios_base::out|ios_base::in);
     fstream index((fiN+".ind").c_str(),ios_base::out|ios_base::in);
     num_of_stu=0;
+    int i=0;
 
     while(!index.eof()){
 
@@ -190,9 +181,17 @@ void MainWindow::ini(){
            string _num_;
            num_>>_num_;
 
-           string list= temp.name +" : " +temp.id +" "+_sex
-                   +" "+temp.major+" "+"课程数:"+_num_;
+           string list= temp.name +" : " +temp.id +"\t"+_sex
+                   +"\t"+temp.major+"\t"+"课程数:"+_num_;
            item->setText(QString::fromStdString(list));
+
+           if(i%2){
+               item->setBackground(QColor(255,255,255));
+           }
+           else {
+               item->setBackground(QColor(220,220,220));
+           }
+           i++;
            ui->listWidget_1->addItem(item);
            num_of_stu++;
        }
@@ -221,7 +220,6 @@ void MainWindow::list_1_refresh(){
     QListWidgetItem *item;
     for(int index = 0;index <counter;index++)
     {
-
         item = ui->listWidget_1->takeItem(0);
         if(item!=nullptr)
         delete item;
@@ -441,10 +439,23 @@ void MainWindow::list_2_refresh(){//更新列表
         num_<<(i+1);
         string _num_;
         num_>>_num_;
-
-        string list= _num_ + ":" + "课程:" + temp.cour[i].cour +
-                "->成绩:"+_grade_;
+        string list;
+        if(temp.cour[i].cour.length()<8)
+        {
+            list= _num_ + ":" + "课程:" + temp.cour[i].cour +
+                    "\t\t成绩:"+_grade_;
+        }
+        else {
+            list= _num_ + ":" + "课程:" + temp.cour[i].cour +
+                    "\t成绩:"+_grade_;
+        }
         item->setText(QString::fromStdString(list));
+        if(i%2){
+            item->setBackground(QColor(255,240,245));
+        }
+        else {
+            item->setBackground(QColor(255,255,244));
+        }
         ui->listWidget_2->addItem(item);
     }
 
@@ -487,20 +498,15 @@ void MainWindow::read_file(string filename){
 }
 
 void MainWindow::add_new(){
-    ui->prg->setValue(0);
     if((temp.id!="")&&(temp.name!="")&&(temp.major!="")){
-        prog(10);
         wtFile(fiN,temp);
         //clear the data that have been writen to the file
         clear(0);
         ui->statusBar->setStyleSheet("color:green;");
         ui->statusBar->showMessage(tr("√√√√√添加成功√√√√√"),2000);
-        prog(90);
         list_1_refresh();
-        prog(100);
     }
     else {
-        prog(10);
         ui->statusBar->setStyleSheet("color:red;");
         ui->statusBar->showMessage(tr("xxxxx非法添加xxxxx"),2000);
     }
@@ -508,18 +514,13 @@ void MainWindow::add_new(){
 }
 
 void MainWindow::change_old(){
-    ui->prg->setValue(0);
     if(ui->listWidget_1->currentRow()!=-1){
-        prog(10);
         wtFile(fiN,temp,point);
         ui->statusBar->setStyleSheet("color:green;");
         ui->statusBar->showMessage(tr("√√√√√修改成功√√√√√"),2000);
-        prog(90);
         list_1_refresh();
-        prog(100);
     }
     else {
-        prog(10);
         ui->statusBar->setStyleSheet("color:red;");
         ui->statusBar->showMessage(tr("xxxxx非法提交xxxxx"),2000);
     }
@@ -527,22 +528,17 @@ void MainWindow::change_old(){
 }
 
 void MainWindow::del_sel(){
-    ui->prg->setValue(0);
     dfFile(fiN,point);
     ui->statusBar->setStyleSheet("color:green;");
     ui->statusBar->showMessage(tr("√√√√√删除成功√√√√√"),2000);
-    prog(90);
     list_1_refresh();
-    prog(100);
     clear(1);
 }
 
 void MainWindow::defrag(){//delete the litter in the file
-    ui->prg->setValue(0);
     clnLit(fiN);
     ui->statusBar->setStyleSheet("color:green;");
     ui->statusBar->showMessage(tr("√√√√√碎片整理成功√√√√√"),2000);
-    prog(100);
     clear(1);
 }
 
@@ -577,6 +573,7 @@ void MainWindow::list_1_refresh_srch(){
     //read items from the file
     fstream file(fiN.c_str(),ios_base::out|ios_base::in);
     fstream index("res",ios_base::out|ios_base::in);
+    int i=0;
 
     while(!index.eof()){
 
@@ -635,9 +632,17 @@ void MainWindow::list_1_refresh_srch(){
            num_<<temp.num;
            string _num_;
            num_>>_num_;
-           string list= temp.name +":" +temp.id +" "+_sex
-                   +" "+temp.major+" "+"课程数:"+_num_;
+           string list= temp.name +":" +temp.id +"\t"+_sex
+                   +"\t"+temp.major+"\t"+"课程数:"+_num_;
            item->setText(QString::fromStdString(list));
+
+           if(i%2){
+               item->setBackground(QColor(255,255,255));
+           }
+           else {
+               item->setBackground(QColor(220,220,220));
+           }
+           i++;
            ui->listWidget_1->addItem(item);
        }
        file.close();
@@ -756,7 +761,7 @@ void MainWindow::list_1_refresh_sort(){
     //read items from the file
     fstream file(fiN.c_str(),ios_base::out|ios_base::in);
     fstream index("sort",ios_base::out|ios_base::in);
-
+    int i=0;
     while(!index.eof()){
 
            long long point=0;
@@ -814,9 +819,17 @@ void MainWindow::list_1_refresh_sort(){
            num_<<temp.num;
            string _num_;
            num_>>_num_;
-           string list= temp.name +":" +temp.id +" "+_sex
-                   +" "+temp.major+" "+"课程数:"+_num_;
+           string list= temp.name +":" +temp.id +"\t"+_sex
+                   +"\t"+temp.major+"\t"+"课程数:"+_num_;
            item->setText(QString::fromStdString(list));
+
+           if(i%2){
+               item->setBackground(QColor(255,255,255));
+           }
+           else {
+               item->setBackground(QColor(220,220,220));
+           }
+           i++;
            ui->listWidget_1->addItem(item);
        }
        file.close();

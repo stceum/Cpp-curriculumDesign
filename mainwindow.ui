@@ -21,35 +21,27 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_9">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QListWidget" name="listWidget_1">
-        <property name="minimumSize">
-         <size>
-          <width>600</width>
-          <height>700</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>黑体</family>
-          <pointsize>10</pointsize>
-          <underline>true</underline>
-         </font>
-        </property>
-        <property name="autoScroll">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="prg">
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QListWidget" name="listWidget_1">
+      <property name="minimumSize">
+       <size>
+        <width>600</width>
+        <height>700</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>10</pointsize>
+        <underline>false</underline>
+       </font>
+      </property>
+      <property name="lineWidth">
+       <number>3</number>
+      </property>
+      <property name="autoScroll">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -546,8 +538,14 @@
          <font>
           <family>黑体</family>
           <pointsize>10</pointsize>
-          <underline>true</underline>
+          <underline>false</underline>
          </font>
+        </property>
+        <property name="cursor" stdset="0">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="lineWidth">
+         <number>3</number>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::SingleSelection</enum>
